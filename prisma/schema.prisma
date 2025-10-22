@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int             @id @default(autoincrement())
+  address      String          @unique
+  createdAt    DateTime        @default(now())
+  codeId       Int             @unique
+  password     String
+  role         Role            @default(USER)
+  token1Amount Float           @default(10)
+  token2Amount Float           @default(10000)
+  gameResults  GameResultLog[]
+  games        Game[]
+}
+
+model Code {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  userId    Int?
+  createdAt DateTime @default(now())
+}
+
+model Pool {
+  id             Int      @id @default(autoincrement())
+  updatedAt      DateTime @default(now()) @updatedAt
+  token1Amount   Float
+  token2Amount   Float
+  token1SavedFee Float    @default(0)
+  token2SavedFee Float    @default(0)
+}
+
+model PoolTreasury {
+  id           Int      @id @default(autoincrement())
+  token1Amount Float
+  token2Amount Float
+  createdAt    DateTime @default(now())
+}
+
+model GameResultLog {
+  id                  Int        @id @default(autoincrement())
+  userId              Int
+  totalMonstersKilled Int
+  createdAt           DateTime   @default(now())
+  difficulty          Difficulty
+  lastWave            Int
+  user                User       @relation(fields: [userId], references: [id])
+}
+
+model GameTreasury {
+  id           Int      @id @default(autoincrement())
+  token2Amount Float    @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model DynamicAdjustmentFactor {
+  id          Int        @id @default(autoincrement())
+  difficulty  Difficulty
+  factorValue Float
+
+  /// 집계된 GameResultLog 아이디 리스트
+  resultIds   Int[]      // PostgreSQL에서는 Int[] 타입 가능
+  createdAt   DateTime   @default(now())
+}
+
+model DynamicFactorCount {
+  difficulty Difficulty @id
+  count      Int
+}
+
+model Game {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  difficulty  Difficulty
+  waveCount   Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  cardChoices CardChoice[]
+}
+
+model CardChoice {
+  id           Int      @id @default(autoincrement())
+  gameId       Int
+  waveNumber   Int
+  cardType     CardType @default(NORMAL) // 일반카드인지 보스카드인지 구분
+  offeredCards Int[]    // 서버에서 제공한 3개 카드 인덱스 배열
+  selectedCard Int      // 플레이어가 선택한 카드 인덱스
+  createdAt    DateTime @default(now())
+  game         Game     @relation(fields: [gameId], references: [id])
+}
+
+enum CardType {
+  NORMAL
+  BOSS
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  NORMAL
+  HARD
+}

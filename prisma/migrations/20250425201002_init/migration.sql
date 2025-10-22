@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Pool" ADD COLUMN     "savedFee" DOUBLE PRECISION NOT NULL DEFAULT 0;
