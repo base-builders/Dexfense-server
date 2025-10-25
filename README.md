@@ -62,10 +62,10 @@ Dexfense-backend/
 │   │   ├── auth.middleware.ts      # 🔐 JWT verification
 │   │   └── requireAdmin.ts         # 👑 Admin role check
 │   ├── routes/
-│   │   ├── user.routes.ts         # 👤 User endpoints
-│   │   ├── code.routes.ts         # 🎫 Code management
-│   │   ├── pool.routes.ts         # 💧 Pool & swap
-│   │   └── game.routes.ts         # 🎮 Game logic
+│   │   ├── user.routes.ts         # 👤 User route
+│   │   ├── code.routes.ts         # 🎫 Code route
+│   │   ├── pool.routes.ts         # 💧 Pool route
+│   │   └── game.routes.ts         # 🎮 Game route
 │   ├── controllers/
 │   │   ├── user.controller.ts     # User request handlers
 │   │   ├── code.controller.ts     # Code handlers
